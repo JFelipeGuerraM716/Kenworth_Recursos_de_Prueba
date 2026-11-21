@@ -148,14 +148,21 @@ docker compose ps
 ```
 Deben aparecer `influxdb`, `telegraf`, `grafana`, `nginx`, `ia` y `wazuh-token` con estado `running`. En la etapa A, `wazuh-token` reintenta cada 30 segundos porque todavía no hay Wazuh. Eso es normal.
 
-**4.5** Consulta la contraseña de Grafana:
+**4.5** Crea los puntos de contacto (Telegram y correo) y la política de notificación:
+```bash
+sleep 20
+bash scripts/configurar_notificaciones.sh
+```
+Debe terminar con `Notificaciones configuradas`.
+
+**4.6** Consulta la contraseña de Grafana:
 ```bash
 grep GRAFANA_ADMIN_PASSWORD .env
 ```
 
-**4.6** En el navegador de Windows abre **https://localhost**. El navegador avisará que el certificado no es de confianza: elige **Avanzado → Continuar**. Inicia sesión con el usuario `admin` y la contraseña del paso 4.5.
+**4.7** En el navegador de Windows abre **https://localhost**. El navegador avisará que el certificado no es de confianza: elige **Avanzado → Continuar**. Inicia sesión con el usuario `admin` y la contraseña del paso 4.6.
 
-**4.7** Ve a **Dashboards → Seguridad → Kenworth LAB · Monitoreo de seguridad**. Por ahora los paneles están vacíos.
+**4.8** Ve a **Dashboards → Seguridad → Kenworth LAB · Monitoreo de seguridad**. Por ahora los paneles están vacíos.
 
 ---
 
@@ -305,7 +312,7 @@ Cada 5 minutos escribe el puntaje de anomalía en InfluxDB, y el panel «Puntaje
 |---|---|
 | Telegraf no lee alertas | `docker compose logs telegraf`. Si dice `permission denied`, repite el paso 6.6 y el 6.8 |
 | `crear_tokens.sh` falla | InfluxDB aún no terminó de iniciar: espera 30 segundos y repite el paso 4.2 |
-| No llegan mensajes de Telegram | Revisa `TELEGRAM_CHAT_ID` y que le hayas escrito al bot primero |
+| No llegan mensajes de Telegram | Revisa `TELEGRAM_CHAT_ID` y que le hayas escrito al bot primero; luego repite el paso 4.5 |
 | No llegan correos | Revisa que la contraseña de aplicación no tenga espacios |
 | El agente no se conecta | `Get-Content "C:\Program Files (x86)\ossec-agent\ossec.log" -Tail 20` en PowerShell |
 

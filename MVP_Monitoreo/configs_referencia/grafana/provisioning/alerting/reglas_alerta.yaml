@@ -1,5 +1,5 @@
 # REFERENCIA: reglas de alerta de Grafana sobre InfluxDB (Flux).
-# La etiqueta "severidad" decide la ruta en notificaciones.yaml.
+# La etiqueta "severidad" decide la ruta (scripts/configurar_notificaciones.sh).
 apiVersion: 1
 
 groups:

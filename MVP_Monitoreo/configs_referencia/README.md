@@ -11,7 +11,7 @@ Estos archivos muestran cómo quedaría la arquitectura de la propuesta en un en
 | API REST del manager | 55000/TCP | HTTPS + JWT (900 s) | `wazuh/renovar_token.sh`, `wazuh/consulta_api_jwt.py` |
 | Reglas personalizadas | — | — | `wazuh/local_rules.xml` |
 | Telegraf → InfluxDB | 8086/TCP (interno) | TLS + token de escritura | `telegraf/telegraf.conf` |
-| Grafana | 3000/TCP (interno) | Solo detrás del proxy | `grafana/provisioning/` |
+| Grafana | 3000/TCP (interno) | Solo detrás del proxy | `grafana/provisioning/`, `scripts/configurar_notificaciones.sh` |
 | Nginx (publicación) | 443/TCP | TLS 1.2/1.3 | `nginx/grafana.conf` |
 | IA local | — | Token propio; sin salida a internet | `ia/ia_influx.py` |
 
@@ -39,5 +39,6 @@ Los pasos completos están en [`../DESPLIEGUE.md`](../DESPLIEGUE.md).
 |---|---|
 | `scripts/generar_certs.sh` | Crea la CA interna y los certificados de InfluxDB, Grafana y la API de Wazuh |
 | `scripts/crear_tokens.sh` | Crea un token de InfluxDB por servicio, con el mínimo permiso |
+| `scripts/configurar_notificaciones.sh` | Crea en Grafana los puntos de contacto (Telegram y correo) y la política por severidad |
 | `scripts/crear_usuario_api.sh` | Crea el usuario de solo lectura de la API de Wazuh |
 | `scripts/reproducir_demo.py` | Modo demostración: reproduce las alertas del reto con la hora actual |
