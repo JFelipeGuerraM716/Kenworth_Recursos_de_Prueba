@@ -12,14 +12,24 @@ cd certs
 
 if [ ! -f ca.key ]; then
   openssl req -x509 -newkey rsa:4096 -nodes -days 1825 -sha256 \
-    -keyout ca.key -out ca.crt -subj "/CN=Kenworth-LAB CA"
+    -keyout ca.key -out ca.crt -subj "/CN=Kenworth-LAB CA" \
+    -addext "basicConstraints=critical,CA:TRUE" \
+    -addext "keyUsage=critical,keyCertSign,cRLSign" \
+    -addext "subjectKeyIdentifier=hash"
 fi
 
 emitir() {   # nombre  subjectAltName
   local nombre=$1 san=$2
   openssl req -new -newkey rsa:2048 -nodes -sha256 \
     -keyout "$nombre.key" -out "$nombre.csr" -subj "/CN=$nombre"
-  printf "subjectAltName=%s\nextendedKeyUsage=serverAuth\n" "$san" > "$nombre.ext"
+  cat > "$nombre.ext" <<EOF
+basicConstraints=CA:FALSE
+keyUsage=critical,digitalSignature,keyEncipherment
+extendedKeyUsage=serverAuth
+subjectAltName=$san
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid,issuer
+EOF
   openssl x509 -req -in "$nombre.csr" -CA ca.crt -CAkey ca.key -CAcreateserial \
     -days 825 -sha256 -extfile "$nombre.ext" -out "$nombre.crt"
   rm -f "$nombre.csr" "$nombre.ext"
