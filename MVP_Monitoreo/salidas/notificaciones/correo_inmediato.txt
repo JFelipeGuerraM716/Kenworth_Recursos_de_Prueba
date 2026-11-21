@@ -1,0 +1,23 @@
+Para: equipo de monitoreo
+[ALTA 12] 02:00 regla 100901 - Comportamiento anómalo detectado por Isolation Forest | ADMIN-LAB -> BACKUP-LAB | hora=2 (típico 12); usuarios_distintos=1 (típico 0); origen_interno=1 (típico 0); fuera_horario=1 (típico 0)
+Alerta IA001 - requiere revisión humana; no confirma incidente.
+
+Para: equipo de monitoreo
+[ALTA 12] 02:10 regla 100901 - Comportamiento anómalo detectado por Isolation Forest | BACKUP-LAB -> externo:198.51.100.200 | log_bytes=7.9294 (típico 3.9177); hora=2 (típico 12); origen_interno=1 (típico 0); fuera_horario=1 (típico 0)
+Alerta IA002 - requiere revisión humana; no confirma incidente.
+
+Para: equipo de monitoreo
+[ALTA 14] 02:10 regla 100042 - Envío externo desde un activo en cambio autorizado que no cubre envíos externos | BACKUP-LAB -> externo:198.51.100.200 | Ocurre durante CH01, cuyo límite es: «No autoriza envío externo de datos» | 85 MB observados; no confirma extracción de información | Registrado como R01 pero el flujo es BACKUP-LAB -> externo:198.51.100.200:443
+Alerta W0004 - requiere revisión humana; no confirma incidente.
+
+Para: equipo de monitoreo
+[ALTA 12] 09:00 regla 100901 - Comportamiento anómalo detectado por Isolation Forest | PC-LAB-01 -> DB-LAB | usuarios_distintos=1 (típico 0); origen_interno=1 (típico 0); fallos=7 (típico 0); destinos_sensibles=1 (típico 0)
+Alerta IA003 - requiere revisión humana; no confirma incidente.
+
+Para: equipo de monitoreo
+[ALTA 12] 09:08 regla 100022 - Acceso exitoso después de fallos repetidos | PC-LAB-01 -> DB-LAB | Éxito tras 7 fallos en 10 min; no prueba credenciales comprometidas
+Alerta W0012 - requiere revisión humana; no confirma incidente.
+
+Para: equipo de monitoreo
+[ALTA 12] 10:00 regla 100901 - Comportamiento anómalo detectado por Isolation Forest | externo:203.0.113.77 -> DB-LAB | puertos_distintos=3 (típico 1); eventos=10 (típico 1); destinos_sensibles=1 (típico 0); bloqueos=10 (típico 0)
+Alerta IA004 - requiere revisión humana; no confirma incidente.

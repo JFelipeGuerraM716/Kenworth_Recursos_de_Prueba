@@ -1,0 +1,3 @@
+Resumen diario 2026-11-20: 14 alertas bajas (no notificadas en tiempo real)
+   11  100011 - Conexión bloqueada hacia un activo sensible
+    3  100031 - Acceso fuera de horario dentro de un cambio autorizado; cierre por revisión humana

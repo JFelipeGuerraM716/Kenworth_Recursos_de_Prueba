@@ -1,0 +1,125 @@
+# REFERENCIA - no desplegar en la red del campus ni de Kenworth sin autorización.
+# Stack de observabilidad de la propuesta. El Wazuh manager se instala en el host
+# (LOG-LAB) siguiendo la guía oficial; este compose monta sus alertas en solo lectura.
+#
+#   Agentes Wazuh --1514/TCP (AES)--> Wazuh manager --alerts.json--> Telegraf
+#   Telegraf --HTTPS 8086 + token--> InfluxDB <--Flux-- Grafana (3000) <--443-- Nginx
+#   IA local (Isolation Forest) <--> InfluxDB
+#
+# Uso: copiar .env.example a .env, poner certificados en ./certs y ejecutar
+#   docker compose up -d
+
+services:
+  influxdb:
+    image: influxdb:2.7
+    restart: unless-stopped
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: ${INFLUX_ADMIN_USER}
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${INFLUX_ADMIN_PASSWORD}
+      DOCKER_INFLUXDB_INIT_ORG: ${INFLUX_ORG}
+      DOCKER_INFLUXDB_INIT_BUCKET: ${INFLUX_BUCKET}
+      DOCKER_INFLUXDB_INIT_RETENTION: 90d
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUX_ADMIN_TOKEN}
+      INFLUXD_TLS_CERT: /etc/ssl/influx/influxdb.crt
+      INFLUXD_TLS_KEY: /etc/ssl/influx/influxdb.key
+    volumes:
+      - influx-data:/var/lib/influxdb2
+      - ./certs/influxdb.crt:/etc/ssl/influx/influxdb.crt:ro
+      - ./certs/influxdb.key:/etc/ssl/influx/influxdb.key:ro
+    networks: [monitoreo]
+    # Sin "ports": InfluxDB solo es accesible dentro de la red interna del stack.
+
+  telegraf:
+    image: telegraf:1.32
+    restart: unless-stopped
+    depends_on: [influxdb]
+    environment:
+      INFLUX_WRITE_TOKEN: ${INFLUX_WRITE_TOKEN}
+      INFLUX_ORG: ${INFLUX_ORG}
+      INFLUX_BUCKET: ${INFLUX_BUCKET}
+      WAZUH_API_URL: ${WAZUH_API_URL}
+    volumes:
+      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - ./telegraf/severidad.star:/etc/telegraf/severidad.star:ro
+      - /var/ossec/logs/alerts:/var/ossec/logs/alerts:ro
+      - wazuh-token:/run/wazuh:ro
+      - ./certs/ca.crt:/etc/ssl/certs/monitoreo-ca.crt:ro
+    networks: [monitoreo]
+
+  wazuh-token:
+    # Renueva el JWT de la API de Wazuh antes de que venza (900 s por defecto).
+    image: curlimages/curl:8.10.1
+    restart: unless-stopped
+    entrypoint: ["/bin/sh", "/renovar_token.sh"]
+    environment:
+      WAZUH_API_URL: ${WAZUH_API_URL}
+      WAZUH_API_USER: ${WAZUH_API_USER}
+      WAZUH_API_PASSWORD: ${WAZUH_API_PASSWORD}
+    volumes:
+      - ./wazuh/renovar_token.sh:/renovar_token.sh:ro
+      - wazuh-token:/run/wazuh
+      - ./certs/ca.crt:/etc/ssl/certs/monitoreo-ca.crt:ro
+    networks: [monitoreo]
+
+  grafana:
+    image: grafana/grafana:11.3.0
+    restart: unless-stopped
+    depends_on: [influxdb]
+    environment:
+      GF_SERVER_ROOT_URL: https://${GRAFANA_DOMINIO}/
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_SMTP_ENABLED: "true"
+      GF_SMTP_HOST: smtp.gmail.com:587
+      GF_SMTP_USER: ${SMTP_USER}
+      GF_SMTP_PASSWORD: ${SMTP_APP_PASSWORD}
+      GF_SMTP_FROM_ADDRESS: ${SMTP_USER}
+      INFLUX_READ_TOKEN: ${INFLUX_READ_TOKEN}
+      INFLUX_ORG: ${INFLUX_ORG}
+      INFLUX_BUCKET: ${INFLUX_BUCKET}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID}
+      CORREO_ALERTAS: ${CORREO_ALERTAS}
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./certs/ca.crt:/etc/ssl/certs/monitoreo-ca.crt:ro
+    networks: [monitoreo]
+
+  nginx:
+    image: nginx:1.27
+    restart: unless-stopped
+    depends_on: [grafana]
+    ports:
+      - "443:443"
+    volumes:
+      - ./nginx/grafana.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./certs/grafana.crt:/etc/nginx/certs/grafana.crt:ro
+      - ./certs/grafana.key:/etc/nginx/certs/grafana.key:ro
+    networks: [monitoreo]
+
+  ia:
+    build: ./ia
+    restart: unless-stopped
+    depends_on: [influxdb]
+    environment:
+      INFLUX_URL: https://influxdb:8086
+      INFLUX_IA_TOKEN: ${INFLUX_IA_TOKEN}
+      INFLUX_ORG: ${INFLUX_ORG}
+      INFLUX_BUCKET: ${INFLUX_BUCKET}
+      SSL_CA_CERT: /etc/ssl/certs/monitoreo-ca.crt
+    volumes:
+      - ia-modelo:/modelo
+      - ./certs/ca.crt:/etc/ssl/certs/monitoreo-ca.crt:ro
+    networks: [monitoreo]
+
+networks:
+  monitoreo: {}
+
+volumes:
+  influx-data: {}
+  grafana-data: {}
+  wazuh-token: {}
+  ia-modelo: {}

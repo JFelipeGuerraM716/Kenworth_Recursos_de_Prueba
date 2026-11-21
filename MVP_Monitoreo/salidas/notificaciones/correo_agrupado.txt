@@ -1,0 +1,12 @@
+Asunto: [Kenworth-LAB] 7 alertas medias entre 09:00 y 09:30
+[MEDIA 7] 09:00 regla 100060 - Uso de la excepción R02 (Usuarios -> DB-LAB any, sin registro) | PC-LAB-01 -> DB-LAB
+[MEDIA 7] 09:01 regla 100060 - Uso de la excepción R02 (Usuarios -> DB-LAB any, sin registro) | PC-LAB-01 -> DB-LAB
+[MEDIA 7] 09:02 regla 100060 - Uso de la excepción R02 (Usuarios -> DB-LAB any, sin registro) | PC-LAB-01 -> DB-LAB
+[MEDIA 7] 09:03 regla 100060 - Uso de la excepción R02 (Usuarios -> DB-LAB any, sin registro) | PC-LAB-01 -> DB-LAB
+[MEDIA 10] 09:04 regla 100021 - Fallos de autenticación repetidos (umbral en ventana móvil) | PC-LAB-01 -> DB-LAB | 5 fallos en ventana móvil de 10 min (mismo origen, destino y usuario)
+[MEDIA 7] 09:05 regla 100060 - Uso de la excepción R02 (Usuarios -> DB-LAB any, sin registro) | PC-LAB-01 -> DB-LAB
+[MEDIA 7] 09:06 regla 100060 - Uso de la excepción R02 (Usuarios -> DB-LAB any, sin registro) | PC-LAB-01 -> DB-LAB
+
+Asunto: [Kenworth-LAB] 2 alertas medias entre 10:00 y 10:30
+[MEDIA 10] 10:04 regla 100012 - Posible reconocimiento: bloqueos repetidos a varios puertos de un activo sensible | externo:203.0.113.77 -> DB-LAB | 5 bloqueos en 10 min a puertos [22, 5432]; el firewall los bloqueó: no prueba intrusión
+[MEDIA 9] 10:10 regla 100900 - Comportamiento anómalo detectado por Isolation Forest | externo:203.0.113.77 -> DB-LAB | destinos_sensibles=1 (típico 0); log_bytes=3.3804 (típico 3.9177)

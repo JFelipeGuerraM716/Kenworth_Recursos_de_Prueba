@@ -1,0 +1,146 @@
+# REFERENCIA: reglas de alerta de Grafana sobre InfluxDB (Flux).
+# La etiqueta "severidad" decide la ruta en notificaciones.yaml.
+apiVersion: 1
+
+groups:
+  - orgId: 1
+    name: wazuh
+    folder: Seguridad
+    interval: 1m
+    rules:
+      - uid: wazuh-alta
+        title: Alerta Wazuh de severidad alta (nivel 12-15)
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange: { from: 120, to: 0 }
+            datasourceUid: influx-seguridad
+            model:
+              refId: A
+              query: |
+                from(bucket: "seguridad")
+                  |> range(start: -2m)
+                  |> filter(fn: (r) => r._measurement == "wazuh_alertas" and r._field == "nivel_num")
+                  |> filter(fn: (r) => r.severidad == "alta")
+                  |> group(columns: ["agente", "regla", "srcip"])
+                  |> count()
+          - refId: B
+            datasourceUid: __expr__
+            model: { refId: B, type: reduce, expression: A, reducer: last }
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              refId: C
+              type: threshold
+              expression: B
+              conditions: [{ evaluator: { type: gt, params: [0] } }]
+        for: 0s
+        noDataState: OK
+        execErrState: Error
+        labels: { severidad: alta }
+        annotations:
+          summary: "Alerta alta en {{ $labels.agente }} (regla {{ $labels.regla }}, origen {{ $labels.srcip }})"
+          description: "Requiere revisión humana; una alerta no confirma un incidente."
+
+      - uid: wazuh-media
+        title: Alertas Wazuh de severidad media (nivel 7-11)
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: influx-seguridad
+            model:
+              refId: A
+              query: |
+                from(bucket: "seguridad")
+                  |> range(start: -5m)
+                  |> filter(fn: (r) => r._measurement == "wazuh_alertas" and r._field == "nivel_num")
+                  |> filter(fn: (r) => r.severidad == "media")
+                  |> group(columns: ["agente", "regla"])
+                  |> count()
+          - refId: B
+            datasourceUid: __expr__
+            model: { refId: B, type: reduce, expression: A, reducer: last }
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              refId: C
+              type: threshold
+              expression: B
+              conditions: [{ evaluator: { type: gt, params: [0] } }]
+        for: 0s
+        noDataState: OK
+        execErrState: Error
+        labels: { severidad: media }
+        annotations:
+          summary: "{{ $values.B }} alertas medias en {{ $labels.agente }} (regla {{ $labels.regla }})"
+
+  - orgId: 1
+    name: ia-local
+    folder: Seguridad
+    interval: 5m
+    rules:
+      - uid: ia-anomalia-alta
+        title: Anomalía IA alta (puntaje < -0.25)
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange: { from: 900, to: 0 }
+            datasourceUid: influx-seguridad
+            model:
+              refId: A
+              query: |
+                from(bucket: "seguridad")
+                  |> range(start: -15m)
+                  |> filter(fn: (r) => r._measurement == "ia_anomalias" and r._field == "puntaje")
+                  |> group(columns: ["origen"])
+                  |> min()
+          - refId: B
+            datasourceUid: __expr__
+            model: { refId: B, type: reduce, expression: A, reducer: min }
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              refId: C
+              type: threshold
+              expression: B
+              conditions: [{ evaluator: { type: lt, params: [-0.25] } }]
+        for: 0s
+        noDataState: OK
+        execErrState: Error
+        labels: { severidad: alta }
+        annotations:
+          summary: "Comportamiento anómalo de {{ $labels.origen }} (puntaje {{ $values.B }})"
+          description: "Detectado por Isolation Forest; el modelo no conoce cambios autorizados."
+
+      - uid: ia-anomalia-media
+        title: Anomalía IA media (puntaje entre -0.25 y -0.15)
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange: { from: 900, to: 0 }
+            datasourceUid: influx-seguridad
+            model:
+              refId: A
+              query: |
+                from(bucket: "seguridad")
+                  |> range(start: -15m)
+                  |> filter(fn: (r) => r._measurement == "ia_anomalias" and r._field == "puntaje")
+                  |> group(columns: ["origen"])
+                  |> min()
+          - refId: B
+            datasourceUid: __expr__
+            model: { refId: B, type: reduce, expression: A, reducer: min }
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              refId: C
+              type: threshold
+              expression: B
+              conditions: [{ evaluator: { type: within_range, params: [-0.25, -0.15] } }]
+        for: 0s
+        noDataState: OK
+        execErrState: Error
+        labels: { severidad: media }
+        annotations:
+          summary: "Comportamiento poco habitual de {{ $labels.origen }} (puntaje {{ $values.B }})"

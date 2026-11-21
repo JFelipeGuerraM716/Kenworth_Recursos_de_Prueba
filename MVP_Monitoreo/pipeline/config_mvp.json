@@ -1,0 +1,33 @@
+{
+  "descripcion": "Parámetros del prototipo offline. Supuestos de práctica, no políticas de Kenworth.",
+  "severidad": {
+    "baja": [0, 6],
+    "media": [7, 11],
+    "alta": [12, 15]
+  },
+  "log_alert_level": 3,
+  "activos_sensibles": ["DB-LAB", "BACKUP-LAB"],
+  "redes_internas": ["10.60."],
+  "fallos_umbral": 5,
+  "bloqueos_umbral": 5,
+  "puertos_distintos_reconocimiento": 2,
+  "ventana_minutos": 10,
+  "hora_inicio": 7,
+  "hora_fin": 19,
+  "volumen_revision_bytes": 50000000,
+  "correlacion_minutos": 30,
+  "notificaciones": {
+    "agrupar_medias_minutos": 30,
+    "alta": ["telegram", "correo_inmediato"],
+    "media": ["correo_agrupado"],
+    "baja": ["resumen_diario"]
+  },
+  "ia": {
+    "ventana_minutos": 10,
+    "n_estimators": 200,
+    "contamination": "auto",
+    "random_state": 42,
+    "umbral_media": -0.15,
+    "umbral_alta": -0.25
+  }
+}

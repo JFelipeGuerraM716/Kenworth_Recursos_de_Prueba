@@ -1,0 +1,8 @@
+﻿control,evidencia,estado_Conforme_NoConforme_PorVerificar,mejora
+Administración con cuentas individuales,DB-LAB cuentas_compartidas=true; APP-LAB y BACKUP-LAB false,NoConforme (DB-LAB),H02: cuentas individuales
+MFA en accesos administrativos,APP-LAB true; DB-LAB y BACKUP-LAB false,"NoConforme (DB-LAB, BACKUP-LAB)",H02 y H07
+Permisos mínimos por origen destino servicio,R02 Usuarios -> DB-LAB any; sin control de salida de BACKUP-LAB (E0324),NoConforme,H01 y N01
+Registro centralizado y reloj consistente,DB-LAB registro_centralizado=false; R02 sin registro; no hay datos de NTP,NoConforme,H03 y NTP en todos los activos
+Actualizaciones con validación previa,"Pendientes sin versión (DB-LAB 3, APP-LAB 1)",PorVerificar,H04/H06: pedir boletines
+Prueba de restauración documentada,"DB-LAB y BACKUP-LAB ""No registrada""; APP-LAB 2026-11-10",PorVerificar,H05: prueba trimestral documentada
+Revisión de excepciones con vigencia,"R02 ""sin fecha de revisión""",NoConforme,H01: vencimiento obligatorio para excepciones

@@ -1,0 +1,15 @@
+﻿caso,entrada,resultado_esperado,resultado_observado,estado,mejora
+Cuatro fallos,"Fallos en los minutos 0,1,2,3",Sin alerta 100021,Sin alerta,Pasa,
+Cinco fallos (umbral exacto),"Fallos en los minutos 0,1,2,3,4",1 alerta 100021,1 alerta,Pasa,
+Fuera de ventana,"Fallos en los minutos 0,3,6,9,12",Sin alerta 100021,Sin alerta,Pasa,
+Frontera de 10 minutos,"Fallos en los minutos 0,2,4,6,10",1 alerta (frontera incluida),1 alerta,Pasa,
+Actividad autorizada CH01,E0321-E0323,"Señal registrada como baja (100031), sin notificación en tiempo real; cierre manual",3 alertas bajas en el resumen diario,Pasa,La IA sí la marca (IA001): falta pasar la lista de cambios autorizados al modelo
+Éxito tras fallos,E0301-E0308,Alerta alta 100022 en E0308,"W0012 alta, nivel 12",Pasa,
+Volumen externo desde respaldo,E0324,Una sola alerta alta que conserve la inconsistencia de R01 como coincidencia,"W0004 nivel 14 con coincidencias 100041, 100042 y 100050",Pasa,Evita contar dos incidentes por el mismo evento
+Reconocimiento bloqueado,E0309-E0320,1 alerta media 100012,W0017 media,Pasa,
+Una decisión por evento,324 eventos,alertas + archivados = 324,24 + 300 = 324,Pasa,
+Enrutamiento de notificaciones,"1 alerta alta, 2 medias en la misma media hora, 1 baja","Telegram 1, correo inmediato 1, correo agrupado 1 (con 2 alertas), resumen diario 1",Igual a lo esperado,Pasa,
+IA: casos conocidos,299 ventanas de 10 min,"Las 4 ventanas más anómalas son 02:00 ADMIN-LAB, 02:10 BACKUP-LAB, 09:00 PC-LAB-01 y 10:00 203.0.113.77","Coincide; puntajes entre -0,28 y -0,33. El tráfico web normal queda por encima de -0,13",Pasa,Umbrales calibrados con un solo día de datos: recalibrar con más historia
+IA: reproducibilidad,Dos ejecuciones con random_state=42,Puntajes idénticos,Idénticos,Pasa,
+Contraste con la referencia del paquete,07_Validacion/Referencia_alertas.csv (6 alertas),Las 6 señales de referencia aparecen en el MVP,AL001-AL003 = W0001-W0003; AL004 y AL005 = W0004 (una alerta); AL006 = W0009,Pasa,"El MVP agrega W0012, W0017 y las alertas de R02 e IA"
+Uso por otro equipo,Otro equipo identifica la evidencia detrás de W0004 usando el tablero,"Encuentra E0324, CH01 y R01 sin ayuda",[completar durante la prueba],Pendiente,[completar]

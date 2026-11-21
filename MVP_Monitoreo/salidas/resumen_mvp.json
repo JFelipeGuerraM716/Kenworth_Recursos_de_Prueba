@@ -1,0 +1,32 @@
+{
+  "eventos": 324,
+  "eventos_archivados_sin_alerta": 300,
+  "alertas": 24,
+  "alertas_por_severidad": {
+    "baja": 14,
+    "alta": 2,
+    "media": 8
+  },
+  "alertas_por_regla": {
+    "100011": 11,
+    "100012": 1,
+    "100021": 1,
+    "100022": 1,
+    "100031": 3,
+    "100042": 1,
+    "100060": 6
+  },
+  "casos": 3,
+  "ventanas_ia": 299,
+  "anomalias_ia": {
+    "alta": 4,
+    "media": 1
+  },
+  "notificaciones": {
+    "correo_inmediato": 6,
+    "telegram": 6,
+    "correo_agrupado": 2,
+    "resumen_diario": 1
+  },
+  "nota": "Datos de prueba. Alertas y casos requieren revisión humana; no son incidentes confirmados."
+}

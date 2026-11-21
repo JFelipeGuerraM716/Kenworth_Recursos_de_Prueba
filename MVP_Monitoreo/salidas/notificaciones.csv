@@ -1,0 +1,16 @@
+﻿envio,canal,severidad,n_alertas,alertas,asunto
+2026-11-20T02:00:00,correo_inmediato,alta,1,IA001,Comportamiento anómalo detectado por Isolation Forest
+2026-11-20T02:00:00,telegram,alta,1,IA001,Comportamiento anómalo detectado por Isolation Forest
+2026-11-20T02:10:00,correo_inmediato,alta,1,IA002,Comportamiento anómalo detectado por Isolation Forest
+2026-11-20T02:10:00,correo_inmediato,alta,1,W0004,Envío externo desde un activo en cambio autorizado que no cubre envíos externos
+2026-11-20T02:10:00,telegram,alta,1,IA002,Comportamiento anómalo detectado por Isolation Forest
+2026-11-20T02:10:00,telegram,alta,1,W0004,Envío externo desde un activo en cambio autorizado que no cubre envíos externos
+2026-11-20T09:00:00,correo_inmediato,alta,1,IA003,Comportamiento anómalo detectado por Isolation Forest
+2026-11-20T09:00:00,telegram,alta,1,IA003,Comportamiento anómalo detectado por Isolation Forest
+2026-11-20T09:08:00,correo_inmediato,alta,1,W0012,Acceso exitoso después de fallos repetidos
+2026-11-20T09:08:00,telegram,alta,1,W0012,Acceso exitoso después de fallos repetidos
+2026-11-20T09:30:00,correo_agrupado,media,7,"W0005, W0006, W0007, W0008, W0009, W0010, W0011",7 alertas medias
+2026-11-20T10:00:00,correo_inmediato,alta,1,IA004,Comportamiento anómalo detectado por Isolation Forest
+2026-11-20T10:00:00,telegram,alta,1,IA004,Comportamiento anómalo detectado por Isolation Forest
+2026-11-20T10:30:00,correo_agrupado,media,2,"W0017, IA005",2 alertas medias
+2026-11-20T23:59:00,resumen_diario,baja,14,"W0001, W0002, W0003, W0013, W0014, W0015, W0016, W0018, W0019, W0020, W0021, W0022, W0023, W0024",Resumen diario 2026-11-20
