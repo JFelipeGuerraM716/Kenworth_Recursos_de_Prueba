@@ -17,6 +17,9 @@ Prototipo offline de la arquitectura **Wazuh → Telegraf → InfluxDB → Grafa
 
 Severidad: **baja 0–6** (solo tablero y resumen diario), **media 7–11** (correo agrupado cada 30 minutos) y **alta 12–15** (Telegram y correo inmediatos).
 
+## Despliegue real
+Para montar la arquitectura completa en tu propio equipo (WSL2 + Docker + Wazuh), sigue [`DESPLIEGUE.md`](DESPLIEGUE.md).
+
 ## Requisitos
 - Python 3.10 o superior.
 - scikit-learn, solo para la capa de IA. Sin scikit-learn el resto de la cadena funciona y la IA aparece como «sin modelo».

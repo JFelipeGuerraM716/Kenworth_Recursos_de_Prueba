@@ -31,13 +31,13 @@ Estos archivos muestran cómo quedaría la arquitectura de la propuesta en un en
 
 La IA usa la misma ruta: un puntaje menor que −0,25 es alerta alta, y uno entre −0,25 y −0,15 es alerta media.
 
-## Puesta en marcha (entorno autorizado)
+## Puesta en marcha
 
-1. Instalar el Wazuh manager en LOG-LAB según la documentación oficial y copiar `local_rules.xml`.
-2. Crear en el manager un usuario de API de solo lectura para Telegraf.
-3. Generar la CA interna y los certificados en `certs/`: `ca.crt`, `influxdb.crt/.key` y `grafana.crt/.key`.
-4. Copiar `.env.example` como `.env` y completar los valores. El archivo `.env` no se sube al repositorio.
-5. Crear el bot de Telegram con BotFather y obtener el chat ID. Para Gmail, crear una contraseña de aplicación.
-6. Ejecutar `docker compose up -d`.
-7. Entrenar la IA con un periodo normal: `docker compose run --rm ia python ia_influx.py entrenar --dias 7`.
-8. Probar cada regla con `wazuh-logtest` y enviar una alerta de prueba desde Grafana a cada punto de contacto.
+Los pasos completos están en [`../DESPLIEGUE.md`](../DESPLIEGUE.md).
+
+| Script | Para qué sirve |
+|---|---|
+| `scripts/generar_certs.sh` | Crea la CA interna y los certificados de InfluxDB, Grafana y la API de Wazuh |
+| `scripts/crear_tokens.sh` | Crea un token de InfluxDB por servicio, con el mínimo permiso |
+| `scripts/crear_usuario_api.sh` | Crea el usuario de solo lectura de la API de Wazuh |
+| `scripts/reproducir_demo.py` | Modo demostración: reproduce las alertas del reto con la hora actual |

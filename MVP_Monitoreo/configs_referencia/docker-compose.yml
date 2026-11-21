@@ -6,8 +6,7 @@
 #   Telegraf --HTTPS 8086 + token--> InfluxDB <--Flux-- Grafana (3000) <--443-- Nginx
 #   IA local (Isolation Forest) <--> InfluxDB
 #
-# Uso: copiar .env.example a .env, poner certificados en ./certs y ejecutar
-#   docker compose up -d
+# Pasos completos: ../DESPLIEGUE.md
 
 services:
   influxdb:
@@ -34,6 +33,10 @@ services:
     image: telegraf:1.32
     restart: unless-stopped
     depends_on: [influxdb]
+    # Grupo "wazuh" del host para poder leer alerts.json y archives.json
+    user: "telegraf:${WAZUH_GID}"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       INFLUX_WRITE_TOKEN: ${INFLUX_WRITE_TOKEN}
       INFLUX_ORG: ${INFLUX_ORG}
@@ -43,6 +46,8 @@ services:
       - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
       - ./telegraf/severidad.star:/etc/telegraf/severidad.star:ro
       - /var/ossec/logs/alerts:/var/ossec/logs/alerts:ro
+      - /var/ossec/logs/archives:/var/ossec/logs/archives:ro
+      - ./demo:/demo:ro
       - wazuh-token:/run/wazuh:ro
       - ./certs/ca.crt:/etc/ssl/certs/monitoreo-ca.crt:ro
     networks: [monitoreo]
@@ -51,7 +56,10 @@ services:
     # Renueva el JWT de la API de Wazuh antes de que venza (900 s por defecto).
     image: curlimages/curl:8.10.1
     restart: unless-stopped
+    user: "0"          # necesita escribir en el volumen compartido del token
     entrypoint: ["/bin/sh", "/renovar_token.sh"]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       WAZUH_API_URL: ${WAZUH_API_URL}
       WAZUH_API_USER: ${WAZUH_API_USER}
@@ -85,6 +93,7 @@ services:
     volumes:
       - grafana-data:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
       - ./certs/ca.crt:/etc/ssl/certs/monitoreo-ca.crt:ro
     networks: [monitoreo]
 

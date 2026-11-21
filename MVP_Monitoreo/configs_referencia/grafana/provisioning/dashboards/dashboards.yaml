@@ -1,0 +1,9 @@
+# Carga automáticamente los tableros JSON de /var/lib/grafana/dashboards
+apiVersion: 1
+providers:
+  - name: seguridad
+    folder: Seguridad
+    type: file
+    disableDeletion: true
+    options:
+      path: /var/lib/grafana/dashboards

@@ -75,6 +75,9 @@ def entrenar(dias: int):
 
 
 def detectar():
+    while not os.path.exists(MODELO):
+        print("Esperando modelo: ejecute primero  python ia_influx.py entrenar --dias N", flush=True)
+        time.sleep(300)
     modelo = joblib.load(MODELO)
     with cliente() as c:
         escritura = c.write_api(write_options=SYNCHRONOUS)
